@@ -75,11 +75,13 @@ var app = builder.Build();
 // Middleware
 // =========================
 
-if (app.Environment.IsDevelopment())
-{
-    app.UseSwagger();
-    app.UseSwaggerUI();
-}
+//if (app.Environment.IsDevelopment())
+//{
+//    app.UseSwagger();
+//    app.UseSwaggerUI();
+//}
+app.UseSwagger();
+app.UseSwaggerUI();
 
 app.UseMiddleware<ExceptionHandlingMiddleware>();
 
