@@ -8,11 +8,13 @@ namespace TicketSystem.Application.UseCases
     {
         private readonly ITicketRepository _repository;
         private readonly IMemoryCache _cache;
+        private readonly ILogger<GetTicketByIdUseCase> _logger;
 
-        public GetTicketByIdUseCase(ITicketRepository repository, IMemoryCache cache)
+        public GetTicketByIdUseCase(ITicketRepository repository, IMemoryCache cache, ILogger<GetTicketByIdUseCase> logger)
         { 
             _repository = repository;
             _cache = cache;
+            _logger = logger;
         }
 
         public async Task<TicketResponse?> ExecuteAsync(Guid id)
@@ -21,7 +23,12 @@ namespace TicketSystem.Application.UseCases
 
             var cached  = _cache.Get<TicketResponse>(cacheKey);
             if (cached != null)
+            {
+                _logger.LogInformation("Ticket retrieved from cache: {TicketId}", id);
                 return cached;
+            }
+
+            _logger.LogInformation("Ticket retrieved from database: {TicketId}", id);
 
             var ticket = await _repository.GetByIdAsync(id);
 

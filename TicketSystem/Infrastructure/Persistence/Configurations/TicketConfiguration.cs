@@ -21,7 +21,7 @@ namespace TicketSystem.Infrastructure.Persistence.Configurations
             builder.Property(t => t.UpdatedAt);
 
             //  Optimistic Concurrency
-            builder.Property(t => t.RowVersion).IsRowVersion();
+            //builder.Property(t => t.RowVersion).IsRowVersion();
 
             // Ignorar DomainEvents en EF Core
             // porque DomainEvents no deben persistirse

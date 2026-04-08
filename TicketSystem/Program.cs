@@ -11,7 +11,7 @@ using TicketSystem.Infrastructure.Persistence;
 
 
 var builder = WebApplication.CreateBuilder(args);
-builder.WebHost.UseUrls("http://0.0.0.0:5000");
+//builder.WebHost.UseUrls("http://0.0.0.0:5000");
 
 // =========================
 // Controllers
@@ -24,9 +24,14 @@ builder.Services.AddControllers();
 // Database
 // =========================
 
+//builder.Services.AddDbContext<TicketDbContext>(options =>
+//    options.UseSqlServer(
+//        builder.Configuration.GetConnectionString("TicketConnection")));
 builder.Services.AddDbContext<TicketDbContext>(options =>
-    options.UseSqlServer(
-        builder.Configuration.GetConnectionString("TicketConnection")));
+    options.UseNpgsql(
+        builder.Configuration.GetConnectionString("DefaultConnection")));
+
+
 
 
 // =========================
@@ -34,6 +39,7 @@ builder.Services.AddDbContext<TicketDbContext>(options =>
 // =========================
 
 builder.Services.AddScoped<ITicketRepository, TicketRepository>();
+builder.Services.AddScoped<IReopenPolicy, AppSettingsReopenPolicy>();
 
 
 // =========================
@@ -42,6 +48,7 @@ builder.Services.AddScoped<ITicketRepository, TicketRepository>();
 
 builder.Services.AddScoped<CreateTicketUseCase>();
 builder.Services.AddScoped<ReopenTicketUseCase>();
+builder.Services.AddScoped<GetTicketByIdUseCase>();
 
 
 // =========================
@@ -72,15 +79,38 @@ builder.Services.AddSwaggerGen();
 var app = builder.Build();
 
 
+app.UseExceptionHandler(errorApp =>
+{
+    errorApp.Run(async context =>
+    {
+        context.Response.StatusCode = 500;
+        context.Response.ContentType = "application/json";
+
+        var error = context.Features.Get<Microsoft.AspNetCore.Diagnostics.IExceptionHandlerFeature>();
+
+        if (error != null)
+        {
+            var response = new
+            {
+                message = "Ocurrio un error interno",
+                detail = error.Error.Message // en prod esto se oculta
+            };
+
+            await context.Response.WriteAsJsonAsync(response);
+        }
+    });
+});
+
 // =========================
 // Middleware
 // =========================
 
 //if (app.Environment.IsDevelopment())
 //{
-    app.UseSwagger();
+app.UseSwagger();
     app.UseSwaggerUI();
 //}
+
 
 app.UseMiddleware<ExceptionHandlingMiddleware>();
 
@@ -91,5 +121,7 @@ app.UseResponseCaching();
 app.UseAuthorization();
 
 app.MapControllers();
+
+app.MapGet("/health", () => Results.Ok("Healty"));
 
 app.Run();

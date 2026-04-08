@@ -14,7 +14,7 @@ namespace TicketSystem.API.Controllers
         private readonly ITicketRepository _repository;
         private readonly CreateTicketUseCase _createTicket;
         private readonly ReopenTicketUseCase _reopenTicket;
-
+       
         public TicketsController(
             ITicketRepository repository, CreateTicketUseCase createTicket, ReopenTicketUseCase reopenTicket)
         {

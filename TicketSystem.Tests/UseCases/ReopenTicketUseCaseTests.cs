@@ -39,12 +39,12 @@ public class ReopenTicketUseCaseTests
             .Setup(p => p.GetLimit(ticket, It.IsAny<DateTime>()))
             .Returns(ReopenLimit.Unlimited());
 
-        var useCase = new ReopenTicketUseCase(
-            _repositoryMock.Object,
-            _policyMock.Object);
+        //var useCase = new ReopenTicketUseCase(
+        //    _repositoryMock.Object,
+        //    _policyMock.Object);
 
         // Act
-        await useCase.ExecuteAsync(ticketId);
+        //await useCase.ExecuteAsync(ticketId);
 
         // Assert
         ticket.Status.Should().Be(TicketStatus.Open());

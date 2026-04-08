@@ -38,8 +38,8 @@ namespace TicketSystem.Infrastructure.Persistence
                       .IsRequired();
 
                 // Concurrency
-                entity.Property(t => t.RowVersion)
-                      .IsRowVersion();
+                //entity.Property(t => t.RowVersion)
+                 //     .IsRowVersion();
 
             });
         }

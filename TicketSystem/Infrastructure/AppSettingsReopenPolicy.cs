@@ -15,7 +15,16 @@ namespace TicketSystem.Infrastructure
 
         public ReopenLimit GetLimit(Ticket ticket, DateTime currentDate)
         {
-            throw new NotImplementedException();
+            // Obtener el máximo permitido desde configuración
+            var maxAllowed = _config.GetValue<int>("TicketSettings:MaxReopenCount");
+
+            // Si maxAllowed == 0 → ilimitado
+            if (maxAllowed == 0)
+            {
+                return ReopenLimit.Unlimited();
+            }
+
+            return ReopenLimit.Of(maxAllowed);
         }
 
         public int GetMaxReopenAllowed(Ticket ticket, DateTime currentDate)

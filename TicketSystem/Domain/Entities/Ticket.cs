@@ -39,7 +39,7 @@ namespace TicketSystem.Domain.Entities
         // EF Core usuara este campo como RowVersion
         // para detectar conflictos cuando dos procesos
         // intentan modificar el mismo ticket al mismo tiempo
-        public byte[] RowVersion { get; private set; }
+        //public byte[] RowVersion { get; private set; }
 
         // ===================================
         // DOMAIN EVENTS SUPPORT
@@ -72,8 +72,14 @@ namespace TicketSystem.Domain.Entities
                 //Todo ticket nuevo inicia en estado Open
                 Status = TicketStatus.Open(),
 
-                CreatedAt = DateTime.Now,
-                UpdatedAt = DateTime.Now,
+                //PARA SQL
+                //CreatedAt = DateTime.Now,
+                //UpdatedAt = DateTime.Now,
+
+                //para POSTGRESS
+                CreatedAt = DateTime.UtcNow,
+                UpdatedAt = DateTime.UtcNow,
+
                 ReopenCount = 0
             };
 
