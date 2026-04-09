@@ -11,7 +11,14 @@ using TicketSystem.Infrastructure.Persistence;
 
 
 var builder = WebApplication.CreateBuilder(args);
-//builder.WebHost.UseUrls("http://0.0.0.0:5000");
+builder.WebHost.UseUrls("http://0.0.0.0:5000");
+
+// ========================
+// Logs
+// ========================
+builder.Logging.ClearProviders();
+builder.Logging.AddConsole();
+builder.Logging.AddDebug();
 
 // =========================
 // Controllers

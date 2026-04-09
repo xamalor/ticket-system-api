@@ -18,11 +18,23 @@ namespace TicketSystem.Infrastructure.Persistence
 
         public async Task<Ticket?> GetByIdAsync(Guid id)
         {
+            
+                _logger.LogInformation("Searching ticket with Id: {TicketId}", id);
+
             try
             {
-                _logger.LogInformation("Getting ticket with Id: {TicketId}", id);
+                var ticket = await _context.Tickets.FirstOrDefaultAsync(t => t.Id == id);
 
-                return await _context.Tickets.FirstOrDefaultAsync(t => t.Id == id);
+                if (ticket == null)
+                {
+                    _logger.LogWarning("Ticket with Id {TicketId} not found", id);
+                }
+                else
+                {
+                    _logger.LogInformation("Ticket with Id {TicketId} found successfully", id);
+                }
+
+                return ticket;
             }
             catch (Exception ex) 
             {

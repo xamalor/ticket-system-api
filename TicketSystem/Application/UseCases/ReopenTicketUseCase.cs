@@ -8,22 +8,30 @@ namespace TicketSystem.Application.UseCases
         private readonly ITicketRepository _repository;
         private readonly IReopenPolicy _policy;
         private readonly ICacheService _cache;
+        private readonly ILogger<ReopenTicketUseCase> _logger;
 
 
-        public ReopenTicketUseCase(ITicketRepository repository,IReopenPolicy policy, ICacheService cache)
+        public ReopenTicketUseCase(ITicketRepository repository,IReopenPolicy policy, ICacheService cache, ILogger<ReopenTicketUseCase> logger)
         {
             _repository = repository;
             _policy = policy;
             _cache = cache;
+            _logger = logger;
         }
 
         public async Task ExecuteAsync(Guid ticketId)
         {
+            _logger.LogInformation("Reopening ticket {TicketId}", ticketId);
+
             //1.Obtener aggregate
             var ticket = await _repository.GetByIdAsync(ticketId);
 
             if (ticket == null)
+            {
+                _logger.LogWarning("Ticket {TicketId} not found",ticketId);
+
                 throw new Exception("Ticket not found");
+            }
 
             //2.Obtener regla del negocio
             var limit = _policy.GetLimit(ticket, DateTime.UtcNow);
@@ -36,6 +44,8 @@ namespace TicketSystem.Application.UseCases
 
             // Invalidar Cache
             _cache.Remove($"ticket-{ticketId}");
+
+            _logger.LogInformation("Ticket {TicketId} reopened successfully", ticketId);
         }
     }
 }

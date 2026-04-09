@@ -11,6 +11,7 @@ public class ReopenTicketUseCaseTests
     private readonly Mock<ITicketRepository> _repositoryMock;
     private readonly Mock<IReopenPolicy> _policyMock;
 
+
     public ReopenTicketUseCaseTests()
     {
         _repositoryMock = new Mock<ITicketRepository>();
